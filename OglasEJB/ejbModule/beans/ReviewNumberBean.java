@@ -22,6 +22,8 @@ import model.Oglas;
 public class ReviewNumberBean implements ReviewNumberBeanRemote {
 
     private HashMap<Integer, Integer> mapReviews;
+    private Integer todayResponds;
+    
     private @PersistenceContext EntityManager entityManager;
     private @Resource TimerService timerService;
     private @Resource Timer timer;
@@ -29,18 +31,24 @@ public class ReviewNumberBean implements ReviewNumberBeanRemote {
     public ReviewNumberBean() {
         
     	this.mapReviews = new HashMap<>();
+    	this.todayResponds = 0;
     }
     
     @PostConstruct
     public void startTimer() {
     	var tc = new TimerConfig();
     	tc.setPersistent(false);
-    	timer = timerService.createIntervalTimer(0, 3000, tc);
+    	timer = timerService.createIntervalTimer(0, 24*60*60*1000, tc);
     }
     
     @Override
     public HashMap<Integer, Integer> getMapReviews(){
     	return mapReviews;
+    }
+    
+    @Override
+    public Integer getTodayResponds(){
+    	return todayResponds;
     }
 
 	@Override
@@ -50,7 +58,8 @@ public class ReviewNumberBean implements ReviewNumberBeanRemote {
 	
 	@Timeout
 	public void timeout(Timer timer) {
-		System.err.println("Todays respond to add -> " + getMapReviews().entrySet().size());
+		System.err.println("Todays respond to add -> " + todayResponds);
+		this.todayResponds = 0;
 	}
 	
 	@Schedule(second = "*", persistent = false, minute="*/15", hour="*")
@@ -81,4 +90,8 @@ public class ReviewNumberBean implements ReviewNumberBeanRemote {
 		
 	}
 
+	@Override
+	public void setRespond() {
+		this.todayResponds++;
+	}
 }

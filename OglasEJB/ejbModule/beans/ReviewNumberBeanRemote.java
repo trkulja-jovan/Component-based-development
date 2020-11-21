@@ -8,4 +8,6 @@ import javax.ejb.Remote;
 public interface ReviewNumberBeanRemote {
 	public HashMap<Integer, Integer> getMapReviews();
 	public void updateMap(Integer key, Integer value);
+	public Integer getTodayResponds();
+	public void setRespond();
 }

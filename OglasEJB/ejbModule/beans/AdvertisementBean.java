@@ -8,6 +8,7 @@ import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import interceptors.FindInterceptor;
 import interceptors.Interceptor;
 import interceptors.StatefulInterceptor;
 import interfaces.AdvertisementBeanRemote;
@@ -44,6 +45,7 @@ public class AdvertisementBean implements AdvertisementBeanRemote {
 	}
 
 	@Override
+	@Interceptors({FindInterceptor.class})
 	public List<Oglas> findAdvertisements(String keyword) {
 		
 		try {
